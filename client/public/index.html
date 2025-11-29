@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎥 ZeroHarcos Videómegosztó App - AWS Prezentáció</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS az esztétikához */
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
+        
+        <!-- Cím és AWS utalás -->
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-700 flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                ZeroHarcos Video Megosztó
+            </h1>
+            <!-- JAVÍTVA: Tiszta szöveges formátum -->
+            <p class="text-gray-500 mt-1 font-semibold">AWS Architektúra Folyamata:</p>
+            <p class="text-sm text-gray-600">
+                ALB ➡️ ASG/EC2 ➡️ RDS/S3
+            </p>
+        </header>
+
+        <!-- Feltöltési Szakasz (A server/routes/videoroutes.js felé induló kérés szimulálása) -->
+        <section class="mb-10 p-6 bg-yellow-50 border border-yellow-300 rounded-lg shadow-inner">
+            <h2 class="text-2xl font-semibold text-yellow-800 mb-4 flex items-center">
+                <span class="mr-2">📁</span> Videó Feltöltése
+            </h2>
+            <p class="text-gray-600 mb-4 font-medium">
+                <!-- JAVÍTVA: Tiszta szöveges formátum -->
+                **Logika:** A <code class="bg-gray-200 p-1 rounded">public/src/app.js</code> innen indít kérést a <code class="bg-gray-200 p-1 rounded">/api/video/upload</code> útvonalra. Ezt az útvonalat a <code class="bg-gray-200 p-1 rounded">server/routes/videoroutes.js</code> kezeli, ami továbbítja a <code class="bg-gray-200 p-1 rounded">videocontroller.js</code>-nek. Ez végzi az <code class="bg-gray-200 p-1 rounded">S3</code> és <code class="bg-gray-200 p-1 rounded">RDS</code> műveleteket.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <input type="text" placeholder="Videó címe (RDS metaadat)" class="w-full sm:w-1/2 p-3 border border-gray-300 rounded-lg bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="file" id="video-file-input" accept="video/*" class="w-full sm:w-1/2 p-3 border border-gray-300 rounded-lg bg-white">
+                <button 
+                    onclick="showMessage('Feltöltés indítása! A kérés a videoroutes.js-en és videocontroller.js-en keresztül megy az S3-ba és RDS-be.', 'bg-indigo-600');"
+                    class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-xl hover:bg-indigo-700 transition duration-150"
+                >
+                    API Kérés Küldése
+                </button>
+            </div>
+            <div id="message-box" class="mt-4 p-3 rounded-lg text-white font-medium hidden"></div>
+        </section>
+
+        <!-- Videók Megjelenítése Szakasz (A server/routes/videoroutes.js GET kérése szimulálása) -->
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                <span class="mr-2">📺</span> Legújabb Videók
+            </h2>
+            <p class="text-gray-600 mb-6">
+                <!-- JAVÍTVA: Tiszta szöveges formátum -->
+                A lista betöltése: A böngésző a <code class="bg-gray-200 p-1 rounded">/api/video/list</code> útvonalra küld kérést. A <code class="bg-gray-200 p-1 rounded">videocontroller.js</code> lekérdezi az <code class="bg-gray-200 p-1 rounded">RDS</code> adatbázist a metaadatokért, az <code class="bg-gray-200 p-1 rounded">EC2</code> visszaadja az <code class="bg-gray-200 p-1 rounded">S3</code> linkeket, a videót pedig a böngésző tölti be az <code class="bg-gray-200 p-1 rounded">S3</code>-ból.
+            </p>
+
+            <!-- Szimulált Videó Elem 1 -->
+            <div class="video-card bg-gray-50 p-4 mb-4 rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition duration-200">
+                <h3 class="text-xl font-bold text-red-600">AWS Infrastruktúra Elmélet (1. fejezet)</h3>
+                <!-- JAVÍTVA: Tiszta szöveges formátum -->
+                <p class="text-sm text-gray-500 mb-3">**Forrás:** RDS ID: 001 | **EC2 Kiszolgáló:** <code class="bg-gray-200 p-1 rounded">i-038cd16c2f3367eae</code></p>
+                <div class="bg-gray-800 h-56 flex items-center justify-center rounded-lg mb-3 overflow-hidden border-4 border-red-700">
+                    <p class="text-white text-lg font-mono">VIDEO PLAYER (S3 Stream)</p>
+                </div>
+                <button 
+                    onclick="showMessage('A videó lejátszása direkt az S3-ból történik, tehermentesítve az EC2/ALB-t!', 'bg-red-600');"
+                    class="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition duration-150"
+                >
+                    Lejátszás S3-ról
+                </button>
+            </div>
+
+            <!-- Szimulált Videó Elem 2 -->
+            <div class="video-card bg-gray-50 p-4 mb-4 rounded-lg border border-gray-200 shadow-sm">
+                <h3 class="text-xl font-bold text-red-600">Frontend Komponensek (<code class="bg-gray-200 p-1 rounded">public/src/components</code>)</h3>
+                <!-- JAVÍTVA: Tiszta szöveges formátum -->
+                <p class="text-sm text-gray-500 mb-3">**Forrás:** RDS ID: 002 | **Kiszolgáló:** <code class="bg-gray-200 p-1 rounded">Application Load Balancer</code></p>
+                <div class="bg-gray-200 h-56 flex items-center justify-center rounded-lg mb-3">
+                    <p class="text-gray-600 text-lg font-mono">FRONTEND MOCKUP (EC2 Server)</p>
+                </div>
+                <button 
+                    onclick="showMessage('ALB útválasztás: A kérést az ASG valamelyik EC2 példánya fogadta.', 'bg-red-600');"
+                    class="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition duration-150"
+                >
+                    Lejátszás
+                </button>
+            </div>
+        </section>
+
+        <!-- Lábjegyzet a kódstruktúrára és az AWS-re hivatkozva -->
+        <footer class="mt-8 pt-4 border-t text-sm text-gray-400 text-center">
+            Fejlesztési környezet: VS Code. Kódstruktúra: <code class="bg-gray-200 p-1 rounded">server.js</code> ➡️ <code class="bg-gray-200 p-1 rounded">videoroutes.js</code> ➡️ <code class="bg-gray-200 p-1 rounded">videocontroller.js</code>. | AWS futási környezet: Europe (Frankfurt) VPC.
+        </footer>
+    </div>
+
+    <!-- JavaScript a felugró üzenetekhez (simulálja a háttér logikát) -->
+    <script>
+        function showMessage(text, colorClass) {
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = text;
+            // Átmeneti Tailwind class törlés, majd az új osztály beállítása
+            msgBox.className = 'mt-4 p-3 rounded-lg text-white font-medium transition duration-300 ' + colorClass;
+            msgBox.style.display = 'block';
+
+            // Elrejtés 5 másodperc után
+            setTimeout(() => {
+                msgBox.style.display = 'none';
+                msgBox.className = 'mt-4 p-3 rounded-lg text-white font-medium hidden';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
