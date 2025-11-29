@@ -1,11 +1,27 @@
+version: '3.8' # Ezt a sort elhagyhatja, de ez egy jelzés, nem hiba
 services:
-  # ... (Lehet, hogy itt van a meglévő 'server' szolgáltatás)
 
-  client: # Új szolgáltatás a frontendnek
-    container_name: video_megoszto_client
+  # 🚀 Backend Szolgáltatás (Node.js)
+  server:
+    container_name: video_megoszto_backend
     build:
-      context: ./client # A build kontextus a client mappára mutat
-      dockerfile: client.Dockerfile # Az imént létrehozott fájlt használja
+      context: .
+      dockerfile: server.Dockerfile # A gyökérben lévő átnevezett fájl
     ports:
-      - "80:80" # Leképezi a konténer 80-as portját a gazdagép 80-as portjára (vagy használjon 8080:80-at, ha a 80 foglalt)
+      - "3000:3000" # A Node.js alkalmazás portjának leképezése
+    volumes:
+      - .:/app # Fejlesztéshez: forráskód mountolása (opcionális, de hasznos)
+    restart: always
+
+  # 🌐 Frontend Szolgáltatás (Nginx)
+  client:
+    container_name: video_megoszto_frontend
+    build:
+      context: . # A build kontextus továbbra is a gyökér, de a 'dockerfile' beállítás pontosit.
+      dockerfile: client/Dockerfile # A client mappában lévő Nginx Dockerfile
+    ports:
+      - "80:80" # Leképezi a konténer 80-as portját a gazdagép 80-as portjára (elérhető a http://<IP-cím>)
+    volumes:
+      # Ez biztosítja, hogy a változások azonnal megjelenjenek a futó konténerben
+      - ./client/public:/usr/share/nginx/html
     restart: always

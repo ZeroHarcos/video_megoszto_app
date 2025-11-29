@@ -1,20 +1,7 @@
-# 1. Node alap image
-FROM node:18
+# Nginx alap image-et használ a statikus fájlok kiszolgálásához
+FROM nginx:alpine
 
-# 2. Workdir létrehozása
-WORKDIR /app
-
-# 3. package.json bemásolása
-COPY package*.json ./
-
-# 4. Dependencies telepítése
-RUN npm install
-
-# 5. Az egész projekt bemásolása
-COPY . .
-
-# 6. App induló portja
-EXPOSE 3000
-
-# 7. Indítás
-CMD ["node", "server/server.js"]
+# A client/public/ mappában lévő index.html-t és a többi fájlt másolja át a
+# Nginx webszerver alapértelmezett mappájába.
+# FELTÉTELEZÉS: a futtatható frontend fájlok a client/public/ mappában vannak.
+COPY client/public/ /usr/share/nginx/html
