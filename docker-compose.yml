@@ -6,7 +6,7 @@ services:
     container_name: video_megoszto_backend
     build:
       context: .
-      dockerfile: server.Dockerfile # A gyökérben lévő átnevezett fájl
+      dockerfile: server.dockerfile # A gyökérben lévő átnevezett fájl
     ports:
       - "3000:3000" # A Node.js alkalmazás portjának leképezése
     volumes:
@@ -18,7 +18,7 @@ services:
     container_name: video_megoszto_frontend
     build:
       context: . # A build kontextus továbbra is a gyökér, de a 'dockerfile' beállítás pontosit.
-      dockerfile: client/Dockerfile # A client mappában lévő Nginx Dockerfile
+      dockerfile: client/dockerfile # A client mappában lévő Nginx Dockerfile
     ports:
       - "80:80" # Leképezi a konténer 80-as portját a gazdagép 80-as portjára (elérhető a http://<IP-cím>)
     volumes:
